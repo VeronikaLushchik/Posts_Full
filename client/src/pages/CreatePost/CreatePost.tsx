@@ -33,7 +33,7 @@ export const CreatePost: React.FC<Props> = ({ addNewPost }) => {
         Create a post
       </Button>
       <Formik
-        initialValues={{ title: '', body: '' }}
+        initialValues={{ title: '', body: '', comments: [], }}
         validationSchema={validatePost}
         onSubmit={handleSubmit}
       >

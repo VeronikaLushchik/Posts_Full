@@ -4,7 +4,7 @@ interface Post {
     userId?: number;
     title: string;
     body: string;
-    comments: [Partial<Comment>]
+    comments: [Partial<Comment>] | []
   }
   
   interface Comment {
