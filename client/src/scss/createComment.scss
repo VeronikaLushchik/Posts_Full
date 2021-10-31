@@ -1,0 +1,17 @@
+.create_comment {
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    &__title {
+        font-size: 40px;
+        color: #666;
+    }
+
+    &__button {
+        width: 20%;
+        align-self: center;
+    }
+}

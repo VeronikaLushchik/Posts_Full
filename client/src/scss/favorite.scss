@@ -1,0 +1,38 @@
+.box {
+    position: fixed;
+    z-index: 1;
+    width: 50%;
+    height: 100;
+    top: 5%;
+    right: 0;
+    border: 1px solid;
+    background-color: #f4f4f4;
+  }
+
+  .like {
+    position: absolute;
+    background-color: #fff;
+    cursor: pointer;
+  }
+
+  .button {
+    border: none;
+
+    &__like {
+        position: absolute;
+        width: 70px;
+        height: 50px;
+        top: 1%;
+        right: 0%;
+        background-color: #f4f4f4;
+        cursor: pointer;
+    }
+  };
+
+  .list {
+      display: flex;
+
+      &__content {
+          padding: 10px;
+      }
+  }

@@ -1,0 +1,17 @@
+.header {
+    padding-bottom: 30px;
+    display: flex;
+    width: 100%;
+    gap: 40px;
+
+    &__buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    @media (max-width: 480px) {
+        width: 480px;
+        gap: 10px;
+    }
+}
