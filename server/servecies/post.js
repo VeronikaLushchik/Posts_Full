@@ -27,8 +27,8 @@ module.exports.updateComment = async (id, newComment) => {
   const post = await Post.findById(id);
   post.comments.push(newComment);
 
-  const ner = Post.findByIdAndUpdate(id, post, { new: true });
+  const updatedPost = Post.findByIdAndUpdate(id, post, { new: true });
 
-  return ner
+  return updatedPost
 
 }
