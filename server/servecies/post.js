@@ -10,7 +10,25 @@ const Post = require('../models/posts')
     } catch (err) {
       return res.status(500).json({ message: err.message })
     }
-  
+  6
     res.post = post
     next()
   }
+
+  module.exports.createNewPost = (title, body) => {
+    const post = new Post({
+      title,
+      body,
+    })
+    return post.save()
+  }
+
+module.exports.updateComment = async (id, newComment) => {
+  const post = await Post.findById(id);
+  post.comments.push(newComment);
+
+  const ner = Post.findByIdAndUpdate(id, post, { new: true });
+
+  return ner
+
+}

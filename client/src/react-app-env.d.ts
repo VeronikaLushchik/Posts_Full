@@ -17,7 +17,6 @@ interface Post {
   type RootState = {
     posts: Post[],
     post: Partial<Post> | null;
-    comments: Comment[],
     comment: Partial<Comment> | null,
     query: string,
     select: string,

@@ -1,4 +1,5 @@
 const Post = require('../models/posts')
+const { createNewPost } = require('../servecies/post')
 
 getAllPosts = async (req, res) => {
   try {
@@ -14,12 +15,9 @@ getCurrentPost = (req, res) => {
 }
 
 createPost = async (req, res) => {
-  const post = new Post({
-    title: req.body.title,
-    body: req.body.body
-  })
+  const { title, body } = req.body
   try {
-    const newPost = await post.save()
+    const newPost = await createNewPost(title, body)
     res.status(201).json(newPost)
   } catch (err) {
     res.status(400).json({ message: err.message })
@@ -50,17 +48,4 @@ deletePost = async (req, res) => {
   }
 }
 
-commentPost = async (req, res) => {
-  const { id } = req.params;
-  const newComment = req.body;
-
-  const post = await Post.findById(id);
-
-  post.comments.push(newComment);
-
-  const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
-
-  res.json(updatedPost);
-};
-
-  module.exports = { getAllPosts, getCurrentPost, createPost, updatingPost, deletePost, commentPost }
+  module.exports = { getAllPosts, getCurrentPost, createPost, updatingPost, deletePost }

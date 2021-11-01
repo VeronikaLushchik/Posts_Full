@@ -9,7 +9,6 @@ interface Props {
   match: any;
   comments: Comment[];
   comment: null;
-  // loadComments: (activePostId:number) => void;
   loadPost: (id:number) => void;
   addNewComment: (comment: Partial<Comment>, postId: number) => void;
 }
@@ -19,7 +18,6 @@ const PostPage:React.FC<Props> = ({
   post,
   match,
   loadPost,
-  // loadComments,
   addNewComment,
   comments,
 }) => {
@@ -28,12 +26,7 @@ const PostPage:React.FC<Props> = ({
   
   useEffect(() => {
     loadPost(id);
-    // loadComments(id);
-  }, [comment]);
-
-  useEffect(() => {
-    console.log(comments)
-  }, [comments]);
+  }, [comment, post]);
 
   if (!post) {
     return (
@@ -54,7 +47,7 @@ const PostPage:React.FC<Props> = ({
           <div className="post__comments">Comments</div>
           <ul className="post__comment">
             {post?.comments?.map((currentComment: Partial<Comment>) =>
-              <div className="post__card" key={currentComment.name}>
+              <div className="post__card" key={currentComment.body}>
                 <li className="post__title">{currentComment.name}</li>
                 <li className="post__email">
                   <a className="post__email" href="#">{currentComment.email}</a>
