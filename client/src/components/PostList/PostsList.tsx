@@ -67,6 +67,8 @@ export const PostsList: React.FC<Props> = ({
   const indexOfFirstPost = indexOfLastPost - +page;
   const count = Math.ceil(displayedList.length / +page);
 
+  const user = JSON.parse(localStorage.getItem('profile') as string);
+
   const handleFavorite = (id: number) => {
     let newFavList = [...favorite];
 
@@ -118,7 +120,7 @@ export const PostsList: React.FC<Props> = ({
     <Box className="header">
     <Header setSearchValue={setSearchValue} query={query} select={select} setSelectValue={setSelectValue} setSelectPage={setSelectPage} page={page} setSelectView={setSelectView} view={view} />
     </Box>
-    <CreatePost />
+    {user && <CreatePost />}
     {isFetching ? <CircularProgress /> :
     <>
     <div style={{ height: '100%', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>

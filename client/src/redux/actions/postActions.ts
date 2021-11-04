@@ -41,6 +41,7 @@ export const addNewPost = (post: Post)
 : ThunkAction<void, RootState, unknown, AnyAction> => async dispatch => {
   try {
     const resp = await postApi.addPost(post);
+    dispatch(setPost(post));
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log('-------e', e);

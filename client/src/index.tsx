@@ -5,12 +5,11 @@ import './scss/index.scss';
 import { App } from './App';
 import { store } from './redux/store';
 
-const Root = () => (
+ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
       <App />
     </React.StrictMode>
-  </Provider>
+  </Provider>,
+  document.getElementById('root'),
 );
-
-ReactDOM.render(<Root />, document.getElementById('root'));

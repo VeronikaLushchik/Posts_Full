@@ -21,4 +21,6 @@ export const postApi = {
   getPost: (id:number) => request('get', `/posts/${id}`)(),
   addPost: (newPost: Post) => request('post', '/posts')(newPost),
   addComment: (newComment: Comment, postId:number) => request('post', `/posts/${postId}/commentPost`)(newComment),
+  signIn: (formData: any) => request('post', '/users/singin')(formData),
+  signUp: (formData: any) => request('post', '/users/singup')(formData),
 };

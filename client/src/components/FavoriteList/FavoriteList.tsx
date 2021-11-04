@@ -36,6 +36,7 @@ const FavoriteList:React.FC<Props> = ({ favorite, posts, setFavoriteList }) => {
     }
 
     storage.set('key', newFavList);
+    console.log(newFavList)
     setFavoriteList(newFavList);
   };
 

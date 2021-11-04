@@ -7,26 +7,22 @@ import '../../scss/post.scss';
 interface Props {
   post: Post;
   match: any;
-  comments: Comment[];
   comment: null;
   loadPost: (id:number) => void;
   addNewComment: (comment: Partial<Comment>, postId: number) => void;
 }
 
 const PostPage:React.FC<Props> = ({
-  comment,
   post,
   match,
   loadPost,
   addNewComment,
-  comments,
 }) => {
   const id = match?.params?.postId;
   
-  
   useEffect(() => {
     loadPost(id);
-  }, [comment, post]);
+  }, []);
 
   if (!post) {
     return (

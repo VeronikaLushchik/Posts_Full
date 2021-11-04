@@ -10,3 +10,5 @@ export const SET_ADD_FAVORITE = 'SET_ADD_FAVORITE';
 export const FETCH_POSTS = 'FETCH_POSTS';
 export const ERROR_POSTS = 'ERROR_POSTS';
 export const ERROR_POST = 'ERROR_POST';
+export const AUTH = 'AUTH';
+export const LOGOUT = 'LOGOUT';

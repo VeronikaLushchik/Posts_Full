@@ -26,7 +26,7 @@ const initialState: RootState = {
   isFetchingPost: false,
 };
 
-export const postsReducer = (state = initialState, action: AnyAction) => {
+const postsReducer = (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case SET_POSTS:
       return {
@@ -101,3 +101,5 @@ export const postsReducer = (state = initialState, action: AnyAction) => {
       return state;
   }
 };
+
+export default postsReducer;

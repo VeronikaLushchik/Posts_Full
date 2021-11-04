@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React from 'react';
 import PostsList from './components/PostList';
-import CreatePost from './pages/CreatePost';
+import Registration from './pages/Registration';
 import PostPage from './components/PostPage';
 
 export const routes = [
@@ -10,8 +10,8 @@ export const routes = [
     path: '/',
   },
   {
-    page: <CreatePost />,
-    path: '/create',
+    page: <Registration />,
+    path: '/auth',
   },
 
   {
