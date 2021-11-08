@@ -26,4 +26,12 @@ interface Post {
     isFetching: boolean,
     isFetchingPost: boolean,
   };
+
+  interface User {
+    firstName?: string;
+    lastName?: string;
+    email: string;
+    password: string;
+    confirmPassword?: string;
+  }
   

@@ -3,11 +3,9 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Avatar, Button, Paper, Grid, Typography, Container } from '@mui/material';
 import { useHistory } from 'react-router-dom';
-// import LockOutlinedIcon from '@mui/material';
 
 import { signin, signup } from '../redux/actions/authActions';
 import { Input } from '../components/Input';
-import { Padding } from '@mui/icons-material';
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 

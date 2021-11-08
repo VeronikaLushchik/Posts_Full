@@ -3,7 +3,7 @@ const { updateComment } = require('../servecies/post')
 
 commentPost = async (req, res) => {
     const { id } = req.params;
-    const newComment = req.body;
+    const newComment = {...req.body, createAt: new Date(), userId: req.userId };
   
     const updatedPost = await updateComment(id, newComment)
   

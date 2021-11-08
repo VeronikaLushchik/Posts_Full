@@ -1,7 +1,16 @@
+/* eslint-disable */
 import axios from 'axios';
 
 export const instance = axios.create({
   baseURL: 'http://localhost:8080/api',
+});
+
+instance.interceptors.request.use((req) => {
+  if (req.headers && localStorage.getItem('profile')) {
+    req.headers.authorization = `Bearer ${JSON.parse(localStorage.getItem('profile') as string).token}`;
+  }
+
+  return req;
 });
 
 type Method = 'get' | 'post' | 'delete';
@@ -21,6 +30,6 @@ export const postApi = {
   getPost: (id:number) => request('get', `/posts/${id}`)(),
   addPost: (newPost: Post) => request('post', '/posts')(newPost),
   addComment: (newComment: Comment, postId:number) => request('post', `/posts/${postId}/commentPost`)(newComment),
-  signIn: (formData: any) => request('post', '/users/singin')(formData),
-  signUp: (formData: any) => request('post', '/users/singup')(formData),
+  signIn: (formData: User) => request('post', '/users/singin')(formData),
+  signUp: (formData: User) => request('post', '/users/singup')(formData),
 };
