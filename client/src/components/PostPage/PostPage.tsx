@@ -7,7 +7,6 @@ import '../../scss/post.scss';
 interface Props {
   post: Post;
   match: any;
-  comment: null;
   loadPost: (id:number) => void;
   addNewComment: (comment: Partial<Comment>, postId: number) => void;
 }

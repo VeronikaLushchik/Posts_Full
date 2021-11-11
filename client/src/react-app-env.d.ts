@@ -33,5 +33,12 @@ interface Post {
     email: string;
     password: string;
     confirmPassword?: string;
+    photo?: string;
   }
+
+type authState = {
+    authData: any,
+    loading: boolean,
+    errors: string | null,
+  };
   

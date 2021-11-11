@@ -4,7 +4,7 @@ const Post = require('../models/posts')
     let post
     try {
       post = await Post.findById(req.params.id)
-      if (post === null) {
+      if (!post) {
         return res.status(404).json({ message: 'Cannot find post' })
       }
     } catch (err) {

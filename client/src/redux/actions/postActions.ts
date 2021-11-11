@@ -13,12 +13,10 @@ export const setLoader = (loader: boolean) => ({ type: SET_LOADER, loader });
 export const loadPosts = (
 ) => async (dispatch: Dispatch) => {
   try {
-    dispatch({ type: FETCH_POSTS });
-    setTimeout(async () => {
-      const response = await postApi.getPosts()
-      const json = await response.data;
-    dispatch(setPosts(json as Post[]));
-    }, 1000);
+  dispatch({ type: FETCH_POSTS });
+    const response = await postApi.getPosts()
+    const json = await response.data;
+  dispatch(setPosts(json as Post[]));
   } catch (e) {
     dispatch({ type: ERROR_POSTS });
   }
@@ -27,11 +25,9 @@ export const loadPosts = (
 export const loadPost = (id:number
   ) => async (dispatch: Dispatch) => {
     try {
-      setTimeout(async () => {
-        const response = await postApi.getPost(id)
-        const json = await response.data;
-        dispatch(setPost(json as Post));
-      }, 0);
+      const response = await postApi.getPost(id)
+      const json = await response.data;
+      dispatch(setPost(json as Post));
     } catch (e) {
      dispatch({ type: ERROR_POST });
     }

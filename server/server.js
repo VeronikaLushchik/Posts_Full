@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const postsRouter = require('./routes/posts')
 const userRouter = require('./routes/users')
 const cors = require('cors')
@@ -17,9 +18,11 @@ db.on('error', (error) => console.error(error))
 db.once('open', () => console.log('Connected'))
 
 app.use(express.json())
-app.use(cors())
+app.use(cookieParser())
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}))
 
 app.use('/api', postsRouter)
+
 app.use('/api', userRouter)
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`))

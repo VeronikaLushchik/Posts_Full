@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React from 'react';
-import { TextField, Grid, InputAdornment, IconButton } from '@mui/material';
+import { TextField, Grid, TextFieldProps } from '@mui/material';
 
 type Props = {
   name?: string; 

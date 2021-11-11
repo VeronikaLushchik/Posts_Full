@@ -1,17 +1,19 @@
 const jwt = require('jsonwebtoken');
+const { validateAccessToken } = require('../servecies/token')
 
-const secret = 'test';
-
-module.exports.auth = async (req, res, next) => {
+module.exports.auth = (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization.split(' ')[1];
 
-    let decodedData = jwt.verify(token, secret);
+    decodedData = validateAccessToken(token)
+    if (!decodedData) {
+      return res.sendStatus(401);
+    }
 
     req.userId = decodedData?.id;
 
     next();
   } catch (error) {
-    console.log(error);
+    return res.status(401);
   }
 };

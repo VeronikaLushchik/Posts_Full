@@ -2,7 +2,13 @@
 import { AnyAction } from 'redux';
 import { AUTH, LOGOUT } from '../types';
 
-const authReducer = (state = { authData: null }, action:AnyAction) => {
+const initialState: authState = {
+  authData: null,
+  loading: false,
+  errors: null,
+};
+
+const authReducer = (state = initialState, action:AnyAction) => {
   switch (action.type) {
     case AUTH:
       localStorage.setItem('profile', JSON.stringify({ ...action?.data }));

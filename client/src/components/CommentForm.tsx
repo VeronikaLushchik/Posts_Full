@@ -4,6 +4,7 @@ import { Form, Formik, ErrorMessage } from 'formik';
 import { Button, TextField } from '@mui/material';
 import { validateComment } from '../validate';
 import '../scss/createComment.scss';
+import { storage } from '../utils';
 
 type Props = {
   match: any;
@@ -11,7 +12,7 @@ type Props = {
 };
 
 export const CommentForm: React.FC<Props> = ({ addNewComment, match }) => {
-  const user = JSON.parse(localStorage.getItem('profile') as string);
+  const user = storage.get('profile');
   return (
     <div className="create_comment">
       {user &&

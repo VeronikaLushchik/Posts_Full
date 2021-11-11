@@ -11,11 +11,12 @@ getAllPosts = async (req, res) => {
 }
 
 getCurrentPost = (req, res) => {
+  
   res.json(res.post)
 }
 
 createPost = async (req, res) => {
-  const post = req.body
+  const { title, body } = req.body
   try {
     const newPost = await createNewPost(title, body)
     res.status(201).json(newPost)
@@ -25,10 +26,10 @@ createPost = async (req, res) => {
 }
 
 updatingPost = async (req, res) => {
-  if (req.body.title !== null) {
+  if (req.body.title) {
     res.post.title = req.body.title
   }
-  if (req.body.body !== null) {
+  if (req.body.body) {
     res.post.body = req.body.body
   }
   try {

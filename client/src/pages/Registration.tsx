@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 
 import { signin, signup } from '../redux/actions/authActions';
 import { Input } from '../components/Input';
+import { storage } from '../utils';
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
