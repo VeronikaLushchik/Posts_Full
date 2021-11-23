@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { validateAccessToken } = require('../servecies/token')
+const ApiError = require('../servecies/errors')
 
 module.exports.auth = (req, res, next) => {
   try {
@@ -7,13 +8,13 @@ module.exports.auth = (req, res, next) => {
 
     decodedData = validateAccessToken(token)
     if (!decodedData) {
-      return res.sendStatus(401);
+      return next(ApiError.UnauthorizedError());
     }
 
-    req.userId = decodedData?.id;
+    req.userId = decodedData?.user?._id;
 
     next();
   } catch (error) {
-    return res.status(401);
+    return next(ApiError.UnauthorizedError());
   }
 };

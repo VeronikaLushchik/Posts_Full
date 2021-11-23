@@ -25,6 +25,7 @@ interface Post {
     favorite: number[],
     isFetching: boolean,
     isFetchingPost: boolean,
+    count: number | null,
   };
 
   interface User {

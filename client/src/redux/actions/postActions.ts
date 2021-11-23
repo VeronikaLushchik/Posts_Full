@@ -1,21 +1,24 @@
 /* eslint-disable */
 import { AnyAction, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { SET_POSTS, SET_POST, SET_LOADER, SET_SEARCH_VALUE, SET_SELECT_VALUE, SET_SELECT_PAGE, SET_SELECT_VIEW, SET_ADD_FAVORITE, ERROR_POSTS, FETCH_POSTS, ERROR_POST, } from '../types';
+import { SET_POSTS, SET_POST, SET_LOADER, SET_SEARCH_VALUE, SET_SELECT_VALUE, SET_SELECT_PAGE, SET_SELECT_VIEW, SET_ADD_FAVORITE, ERROR_POSTS, FETCH_POSTS, ERROR_POST, SET_COUNT} from '../types';
 
 import { postApi } from '../../api';
 
 export const setPosts = (posts: Post[]) => ({ type: SET_POSTS, posts });
 export const setPost = (post: Post) => ({ type: SET_POST, post });
 export const setLoader = (loader: boolean) => ({ type: SET_LOADER, loader });
+export const setCount = (count: number) => ({ type: SET_COUNT, count });
 
-
-export const loadPosts = (
+export const loadPosts = ( page = '1', limit='6', order='', query=''
 ) => async (dispatch: Dispatch) => {
   try {
   dispatch({ type: FETCH_POSTS });
-    const response = await postApi.getPosts()
-    const json = await response.data;
+    const response = await postApi.getPosts(page, limit, order, query)
+    const results: any = await response.data;
+    const json = results.results;
+    const count = +results.numOfPages;
+  dispatch(setCount(count));
   dispatch(setPosts(json as Post[]));
   } catch (e) {
     dispatch({ type: ERROR_POSTS });

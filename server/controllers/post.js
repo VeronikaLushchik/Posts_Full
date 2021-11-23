@@ -1,12 +1,11 @@
 const Post = require('../models/posts')
 const { createNewPost } = require('../servecies/post')
 
-getAllPosts = async (req, res) => {
+getAllPosts = (req, res, next) => {
   try {
-    const posts = await Post.find()
-    res.json(posts)
+    res.json(res.paginatedResults)
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    next(err)
   }
 }
 
@@ -15,17 +14,17 @@ getCurrentPost = (req, res) => {
   res.json(res.post)
 }
 
-createPost = async (req, res) => {
+createPost = async (req, res, next) => {
   const { title, body } = req.body
   try {
-    const newPost = await createNewPost(title, body)
+    const newPost = await createNewPost(title, body, req.userId)
     res.status(201).json(newPost)
   } catch (err) {
-    res.status(400).json({ message: err.message })
+    next(err)
   }
 }
 
-updatingPost = async (req, res) => {
+updatingPost = async (req, res, next) => {
   if (req.body.title) {
     res.post.title = req.body.title
   }
@@ -36,16 +35,16 @@ updatingPost = async (req, res) => {
     const updatedPost = await res.post.save()
     res.json(updatedPost)
   } catch (err) {
-    res.status(400).json({ message: err.message })
+      next(err)
   }
 }
 
-deletePost = async (req, res) => {
+deletePost = async (req, res, next) => {
   try {
     await res.post.remove()
     res.json({ message: 'Deleted Post' })
   } catch (err) {
-    res.status(500).json({ message: err.message })
+     next(err)
   }
 }
 

@@ -13,7 +13,7 @@ import {
   TableRow,
 } from '@mui/material';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
-import React from 'react';
+import React, { useCallback } from 'react';
 import '../../scss/favorite.scss';
 import { storage } from '../../utils';
 
@@ -26,7 +26,7 @@ interface Props {
 const FavoriteList:React.FC<Props> = ({ favorite, posts, setFavoriteList }) => {
   const [open, setOpen] = React.useState(false);
 
-  const handleFavorite = (id: number) => {
+  const handleFavorite = useCallback((id: number) => {
     let newFavList = [...favorite];
 
     if (newFavList.includes(id)) {
@@ -36,17 +36,16 @@ const FavoriteList:React.FC<Props> = ({ favorite, posts, setFavoriteList }) => {
     }
 
     storage.set('key', newFavList);
-    console.log(newFavList)
     setFavoriteList(newFavList);
-  };
+  }, []);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     setOpen((prev) => !prev);
-  };
+  }, []);
 
-  const handleClickAway = () => {
+  const handleClickAway = useCallback(() => {
     setOpen(false);
-  };
+  }, []);
 
   const favoritePosts = posts.filter(post => favorite.includes(post._id as number));
 

@@ -11,6 +11,7 @@ import {
   FETCH_POSTS,
   ERROR_POSTS,
   ERROR_POST,
+  SET_COUNT,
 } from '../types';
 
 const initialState: RootState = {
@@ -24,6 +25,7 @@ const initialState: RootState = {
   favorite: [],
   isFetching: false,
   isFetchingPost: false,
+  count: null,
 };
 
 const postsReducer = (state = initialState, action: AnyAction) => {
@@ -34,6 +36,12 @@ const postsReducer = (state = initialState, action: AnyAction) => {
         posts: action.posts,
         isFetching: false,
       };
+
+    case SET_COUNT:
+    return {
+      ...state,
+      count: action.count,
+    };
 
     case SET_POST:
       return {

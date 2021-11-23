@@ -1,14 +1,13 @@
 /* eslint-disable */
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Avatar, Button, Paper, Grid, Typography, Container } from '@mui/material';
+import { Button, Paper, Grid, Typography, Container } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 
 import { signin, signup } from '../redux/actions/authActions';
 import { Input } from '../components/Input';
-import { storage } from '../utils';
 
-const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
+const initialState = { photo: '', firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
 const Registration = () => {
   const [form, setForm] = useState(initialState);
@@ -28,22 +27,38 @@ const Registration = () => {
     e.preventDefault();
 
     if (isSignup) {
-      dispatch(signup(form, history));
+      let data = new FormData();
+      data.append("photo", form.photo);
+      data.append("firstName", form.firstName);
+      data.append("lastName", form.lastName);
+      data.append("email", form.email);
+      data.append("password", form.password);
+      data.append("confirmPassword", form.confirmPassword);
+
+      dispatch(signup(data, history));
     } else {
       dispatch(signin(form, history));
     }
   };
 
   const handleChange = (e:any) => setForm({ ...form, [e.target.name]: e.target.value });
-
+  const handlePhoto = (e:any) => setForm({...form, photo: e.target.files[0]})
+  
   return (
     <Container component="main" maxWidth="xs">
       <Paper elevation={6}>
         <Typography component="h1" variant="h5">{ isSignup ? 'Sign up' : 'Sign in' }</Typography>
-        <form onSubmit={handleSubmit} style={{padding: '10px'}}>
+        <form onSubmit={handleSubmit} style={{padding: '10px'}} method="post" encType='multipart/form-data'>
           <Grid container spacing={2}>
             { isSignup && (
             <>
+             <input 
+                type="file" 
+                accept=".png, .jpg, .jpeg"
+                name="photo"
+                onChange={handlePhoto}
+            />
+
               <Input name="firstName" label="First Name" handleChange={handleChange} autoFocus half />
               <Input name="lastName" label="Last Name" handleChange={handleChange} half />
             </>

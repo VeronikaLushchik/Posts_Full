@@ -1,63 +1,54 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+const { generateTokens } = require('../servecies/token');
+const ApiError = require('../servecies/errors')
 
-const User = require('../models/user')
-
-refresh = async (req, res) => {
+refresh = async (req, res, next) => {
   const {refreshToken} = req.cookies
   
-  if (!refreshToken) return res.sendStatus(401)
-
+  if (!refreshToken) return next(ApiError.UnauthorizedError())
   jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403)
-    const token = jwt.sign(user, process.env.SECRET)
+    if (err) return next(ApiError.ForbiddenError())
+    const token = generateTokens({ user }).token
     res.json({ token })
   })
 }
 
-singin = async (req, res) => {
+singin = async (req, res, next) => {
   const { email, password } = req.body;
 
+  const user = await User.findOne({ email });
   try {
-    const user = await User.findOne({ email });
-
-    if (!user) return res.status(404).json({ message: "User doesn't exist" });
- 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
-
-    const token = jwt.sign({ email: user.email, id: user._id }, process.env.SECRET, { expiresIn: "30s" });
-    const refreshToken = jwt.sign({ email: user.email, id: user._id }, process.env.REFRESH_SECRET, { expiresIn: "1h" });
+    const isPasswordCorrect = await user.comparePassword(password);
     
-    res.cookie('refreshToken', refreshToken, {httpOnly: true})
-    res.status(200).json({ result: user, token, refreshToken });
+    if (!isPasswordCorrect || !user) return next(ApiError.BadRequest('Incorrect data'));
+    const tokens = generateTokens({...user})
+
+    res.cookie('refreshToken', tokens.refreshToken, {httpOnly: true})
+    res.status(200).json({ result: user, token: tokens.token });
   } catch (err) {
-    res.status(500).json({ message: "Something went wrong" });
+   next(err)
   }
 };
 
-singup = async (req, res) => {
+singup = async (req, res, next) => {
   const { email, password, firstName, lastName } = req.body;
+  const photo = req?.file?.path;
 
   try {
     const user = await User.findOne({ email });
+    if (user) return next(ApiError.BadRequest( "User already exists" ));
 
-    if (user) return res.status(400).json({ message: "User already exists" });
+    const result = await User.create({photo, email, password, name: `${firstName} ${lastName}` });
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const tokens = generateTokens({...result})
 
-    const result = await User.create({ email, password: hashedPassword, name: `${firstName} ${lastName}` });
-
-    const token = jwt.sign( { email: result.email, id: result._id }, process.env.SECRET, { expiresIn: "30s" } );
-    const refreshToken = jwt.sign({ email: result.email, id: result._id }, process.env.REFRESH_SECRET, { expiresIn: "1h" });
-
-    res.cookie('refreshToken', refreshToken, {httpOnly: true})
-    res.status(201).json({ result, token});
-  } catch (error) {
-    res.status(500).json({ message: "Something went wrong" });
-    console.log(error);
-  }
+    res.cookie('refreshToken', tokens.refreshToken, {httpOnly: true})
+    res.status(201).json({ result, token: tokens.token});
+  } catch (err) {
+      next(err)
+   }
 };
 
 module.exports = { singin, singup, refresh }

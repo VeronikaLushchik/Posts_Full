@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const commentSchema = Schema({
-  _id: Schema.Types.ObjectId,
   name: String,
   email: String,
   body: String,
 })
 
 const postSchema = Schema({
+  userId: { type: Schema.Types.ObjectId, ref: 'User'},
   title: String,
   body: String,
   comments: { type: Schema.Types.Array, ref: 'Comment' },

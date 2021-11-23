@@ -17,7 +17,7 @@ import { storage } from '../../utils'
 
 type Props = {
   posts: Post[],
-  loadPosts: () => void;
+  loadPosts: (page:string, limit:string, order:string, query:string) => void;
   query: string;
   setSearchValue: (query: string) => void;
   select: string;
@@ -29,20 +29,8 @@ type Props = {
   favorite: number[];
   setFavoriteList: (favorite: number[]) => void;
   isFetching: boolean;
+  count: number;
 };
-
-function sortPosts(posts: Post[], select:string) {
-  return posts.sort((a: any, b: any) => {
-    switch (select) {
-      case 'ASC':
-        return a.title.localeCompare(b.title);
-      case 'DESC':
-        return b.title.localeCompare(a.title);
-      default:
-        return posts;
-    }
-  });
-}
 
 export const PostsList: React.FC<Props> = ({
   favorite,
@@ -58,15 +46,10 @@ export const PostsList: React.FC<Props> = ({
   view,
   setSelectView,
   isFetching,
+  count,
 }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [displayedList, setDisplayedList] = useState<Post[]>([]);
+  const [currentPage, setCurrentPage] = useState('1');
   const [maxWidth, setMaxWidth] = useState('370px')
-
-  const indexOfLastPost = currentPage * +page;
-  const indexOfFirstPost = indexOfLastPost - +page;
-  const count = Math.ceil(displayedList.length / +page);
-
   const user = JSON.parse(localStorage.getItem('profile') as string);
 
   const handleFavorite = (id: number) => {
@@ -83,7 +66,11 @@ export const PostsList: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    loadPosts();
+    loadPosts(currentPage, page, select, query);
+  }, [currentPage, page, select, query]);
+
+  useEffect(() => {
+    loadPosts(currentPage, page, select, query);
   }, []);
 
   useEffect(() => {
@@ -100,17 +87,7 @@ export const PostsList: React.FC<Props> = ({
       setMaxWidth('370px');
     }
     
-    setDisplayedList(posts.slice(indexOfFirstPost, indexOfLastPost))
   }, [posts, currentPage, page, view])
-
-  
-  useEffect(() => {
-    if(query.trim()){
-      setDisplayedList(sortPosts(posts.slice(indexOfFirstPost, indexOfLastPost).filter(post => post.title.includes(query)), select))
-    }else {
-      setDisplayedList(sortPosts(posts.slice(indexOfFirstPost, indexOfLastPost), select))
-    }
-  }, [query, select]);
 
   const isFavoriteItem = (id?: number) => favorite.some(i => i === id);
 
@@ -124,7 +101,7 @@ export const PostsList: React.FC<Props> = ({
     {isFetching ? <CircularProgress /> :
     <>
     <div style={{ height: '100%', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-    {displayedList.map((post:Post) => 
+    {posts.map((post:Post) => 
         <Card key={post._id} sx={{ width: maxWidth, margin: '10px' }} className="cards">
           <CardContent className="cardcontent">
             { isFavoriteItem(post._id) && <FavoriteOutlinedIcon onClick={() => handleFavorite(post._id as number)} className="like"/> }
@@ -145,7 +122,7 @@ export const PostsList: React.FC<Props> = ({
     )}
       </div>
     <Stack spacing={2} m="auto" className="pagination">
-      {!query ? <Pagination size="large" count={Math.ceil(posts.length / +page)} page={currentPage} onChange={(event,val)=> setCurrentPage(val)} />
+      {!query ? <Pagination size="large" count={count} page={currentPage} onChange={(event,val:string)=> setCurrentPage(val)} />
       : <Pagination size="large" count={count} page={currentPage} onChange={(event,val)=> setCurrentPage(val)} />}
     </Stack>
     </>
