@@ -6,18 +6,19 @@ import { storage } from './utils';
 import { privetRoutes, publicRoutes } from './routes';
 import { useDispatch, useSelector } from 'react-redux';
 import { AUTH } from './redux/types';
+import { setUser } from './redux/actions/authActions';
 
 export const App: React.FC = () => {
   const dispatch = useDispatch()
-  const userFromStorage = storage.get('profile');
   const user: any = useSelector<any>(state => state.authReducer.authData)
   const [routes, setRoutes] = useState(publicRoutes);
   
   useEffect(() => {
+    const userFromStorage = storage.get('profile');
     if (user) {
       setRoutes(privetRoutes);
     } else if (userFromStorage?.token) {
-      dispatch({ type: AUTH, data: userFromStorage });
+      dispatch(setUser(userFromStorage));
     } else {
       setRoutes(publicRoutes)
     }

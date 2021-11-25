@@ -35,9 +35,9 @@ const FavoriteList:React.FC<Props> = ({ favorite, posts, setFavoriteList }) => {
       newFavList.push(id);
     }
 
-    storage.set('key', newFavList);
+    storage.set('favorite', newFavList);
     setFavoriteList(newFavList);
-  }, []);
+  }, [favorite]);
 
   const handleClick = useCallback(() => {
     setOpen((prev) => !prev);

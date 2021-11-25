@@ -6,7 +6,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { LOGOUT } from '../redux/types';
 import { storage } from '../utils';
-import { isExpired } from "react-jwt";
 
 const useStyles = makeStyles({
   page: {
@@ -58,12 +57,6 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const token = user?.token;
-
-    const isMyTokenExpired = isExpired(token);
-    if (token && isMyTokenExpired) {
-      logout();
-    }
 
     setUser(storage.get('profile'));
   }, [location]);

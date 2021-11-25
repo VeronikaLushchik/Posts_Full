@@ -13,3 +13,4 @@ export const ERROR_POST = 'ERROR_POST';
 export const AUTH = 'AUTH';
 export const LOGOUT = 'LOGOUT';
 export const SET_COUNT = 'SET_COUNT';
+export const SET_USER = 'SET_USER';

@@ -5,6 +5,7 @@ import { Button, TextField } from '@mui/material';
 import { validateComment } from '../validate';
 import '../scss/createComment.scss';
 import { storage } from '../utils';
+import { useCallback } from 'react';
 
 type Props = {
   match: any;
@@ -13,6 +14,15 @@ type Props = {
 
 export const CommentForm: React.FC<Props> = ({ addNewComment, match }) => {
   const user = storage.get('profile');
+
+  const handleSubmit = useCallback((values:any, { setSubmitting, resetForm }:any) => {
+    const id = match?.params?.postId;
+
+    addNewComment(values, id);
+    setSubmitting(false);
+    resetForm();
+  }, [])
+
   return (
     <div className="create_comment">
       {user &&
@@ -21,13 +31,7 @@ export const CommentForm: React.FC<Props> = ({ addNewComment, match }) => {
         <Formik
           initialValues={{ name: user?.result?.name, body: '', email: user?.result?.email }}
           validationSchema={validateComment}
-          onSubmit={(values, { setSubmitting, resetForm }) => {
-            const id = match?.params?.postId;
-
-            addNewComment(values, id);
-            setSubmitting(false);
-            resetForm();
-          }}
+          onSubmit={handleSubmit}
         >
           {({
             values,

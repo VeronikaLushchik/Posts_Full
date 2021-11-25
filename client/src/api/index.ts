@@ -1,27 +1,32 @@
 /* eslint-disable */
 import axios from 'axios';
 import { decodeToken } from 'react-jwt';
-import { storage } from '../utils';
+import { logout } from '../redux/actions/authActions';
+import { store } from '../redux/store';
+import { checkToken, storage } from '../utils';
 
 export const instance = axios.create({
   baseURL: 'http://localhost:8080/api',
   withCredentials: true,
 });
 
-instance.interceptors.request.use(async (req) => {
+instance.interceptors.request.use(req => {
   if (req.headers && storage.get('profile')) {
     req.headers.authorization = `Bearer ${storage.get('profile').token}`;
     const { token } = storage.get('profile');
     const { exp }:any = decodeToken(token);
-// TODO вынести отдельно
-    if (new Date().getTime() / 1000 - 1000 < exp) {
-      const response = await axios.get('http://localhost:8080/api/users/refresh', { withCredentials: true });
-
-      storage.set('profile', { ...storage.get('profile'), token: response.data['token'] });
-    }
+    checkToken(exp);
   }
+    return req;
+  });
 
-  return req;
+instance.interceptors.response.use(response => {
+  return response;
+}, error => {
+ if (error.response.status === 401) {
+  store.dispatch(logout()) 
+ }
+ return error;
 });
 
 type Method = 'get' | 'post' | 'delete';

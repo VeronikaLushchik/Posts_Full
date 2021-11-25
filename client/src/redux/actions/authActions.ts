@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { Dispatch } from 'redux';
-import { AUTH } from '../types';
+import { AUTH, LOGOUT, SET_USER } from '../types';
 import { authApi } from '../../api';
 
 export const signin = (formData:any, router:any) => async (dispatch: Dispatch) => {
@@ -26,3 +26,16 @@ export const signup = (formData:any, router:any) => async (dispatch: Dispatch) =
     console.log(error);
   }
 };
+
+export const setUser = (data:User | null) => (dispatch:Dispatch) => {
+  dispatch({
+    type: AUTH,
+    data: data,
+  });
+};
+
+export const logout = () => {
+  return {
+    type: LOGOUT
+  };
+}

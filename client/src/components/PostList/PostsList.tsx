@@ -14,6 +14,7 @@ import CreatePost from '../../pages/CreatePost';
 import FavoriteList from '../FavoriteList/FavoriteList';
 import '../../scss/postsList.scss';
 import { storage } from '../../utils'
+import { useCallback } from 'react';
 
 type Props = {
   posts: Post[],
@@ -50,9 +51,9 @@ export const PostsList: React.FC<Props> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState('1');
   const [maxWidth, setMaxWidth] = useState('370px')
-  const user = JSON.parse(localStorage.getItem('profile') as string);
+  const user = storage.get('profile');
 
-  const handleFavorite = (id: number) => {
+  const handleFavorite = useCallback((id: number) => {
     let newFavList = [...favorite];
 
     if (newFavList.includes(id)) {
@@ -60,10 +61,12 @@ export const PostsList: React.FC<Props> = ({
     } else {
       newFavList.push(id);
     }
-    storage.set('key', newFavList);
+    storage.set('favorite', newFavList);
 
     setFavoriteList(newFavList);
-  };
+  }, [favorite]);
+
+  const handleChange = useCallback((event:any,val:any) => setCurrentPage(val), [])
 
   useEffect(() => {
     loadPosts(currentPage, page, select, query);
@@ -74,7 +77,7 @@ export const PostsList: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    let favoriteItems = storage.get('key')
+    let favoriteItems = storage.get('favorite')
     if (favoriteItems?.length) {
       setFavoriteList(favoriteItems);
     };
@@ -122,8 +125,7 @@ export const PostsList: React.FC<Props> = ({
     )}
       </div>
     <Stack spacing={2} m="auto" className="pagination">
-      {!query ? <Pagination size="large" count={count} page={currentPage} onChange={(event,val:string)=> setCurrentPage(val)} />
-      : <Pagination size="large" count={count} page={currentPage} onChange={(event,val)=> setCurrentPage(val)} />}
+       <Pagination size="large" count={count} page={currentPage} onChange={handleChange} />
     </Stack>
     </>
     }
