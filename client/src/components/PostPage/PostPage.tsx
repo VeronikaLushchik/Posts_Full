@@ -7,33 +7,21 @@ import '../../scss/post.scss';
 interface Props {
   post: Post;
   match: any;
-  comments: Comment[];
-  comment: null;
-  // loadComments: (activePostId:number) => void;
   loadPost: (id:number) => void;
   addNewComment: (comment: Partial<Comment>, postId: number) => void;
 }
 
 const PostPage:React.FC<Props> = ({
-  comment,
   post,
   match,
   loadPost,
-  // loadComments,
   addNewComment,
-  comments,
 }) => {
   const id = match?.params?.postId;
   
-  
   useEffect(() => {
     loadPost(id);
-    // loadComments(id);
-  }, [comment]);
-
-  useEffect(() => {
-    console.log(comments)
-  }, [comments]);
+  }, []);
 
   if (!post) {
     return (
@@ -54,7 +42,7 @@ const PostPage:React.FC<Props> = ({
           <div className="post__comments">Comments</div>
           <ul className="post__comment">
             {post?.comments?.map((currentComment: Partial<Comment>) =>
-              <div className="post__card" key={currentComment.name}>
+              <div className="post__card" key={currentComment.body}>
                 <li className="post__title">{currentComment.name}</li>
                 <li className="post__email">
                   <a className="post__email" href="#">{currentComment.email}</a>

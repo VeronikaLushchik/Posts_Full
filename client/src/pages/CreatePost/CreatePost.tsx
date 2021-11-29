@@ -4,6 +4,7 @@ import { Formik, ErrorMessage } from 'formik';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { validatePost } from '../../validate';
 import '../../scss/CreatePost.scss';
+import { useCallback } from 'react';
 
 type Props = {
   addNewPost: (post:Post) => void;
@@ -12,20 +13,20 @@ type Props = {
 export const CreatePost: React.FC<Props> = ({ addNewPost }) => {
   const [open, setOpen] = React.useState(false);
 
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     setOpen(true);
-  };
+  },[]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  },[]);
 
-  const handleSubmit = (values: Post, { resetForm, setSubmitting }:any) => {
+  const handleSubmit = useCallback((values: Post, { resetForm, setSubmitting }:any) => {
     addNewPost(values);
     setSubmitting(false);
     resetForm();
     handleClose();
-  };
+  },[]);
 
   return (
     <div className="create">
@@ -33,7 +34,7 @@ export const CreatePost: React.FC<Props> = ({ addNewPost }) => {
         Create a post
       </Button>
       <Formik
-        initialValues={{ title: '', body: '' }}
+        initialValues={{ title: '', body: '', comments: [], }}
         validationSchema={validatePost}
         onSubmit={handleSubmit}
       >

@@ -1,26 +1,25 @@
 /* eslint-disable */
-import { AxiosResponse } from 'axios';
 import { AnyAction, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { SET_POSTS, SET_POST, SET_LOADER, SET_SEARCH_VALUE, SET_SELECT_VALUE, SET_SELECT_PAGE, SET_SELECT_VIEW, SET_ADD_FAVORITE, ADD_POST, ERROR_POSTS, FETCH_POSTS, ERROR_POST, } from '../types';
+import { SET_POSTS, SET_POST, SET_LOADER, SET_SEARCH_VALUE, SET_SELECT_VALUE, SET_SELECT_PAGE, SET_SELECT_VIEW, SET_ADD_FAVORITE, ERROR_POSTS, FETCH_POSTS, ERROR_POST, SET_COUNT} from '../types';
 
 import { postApi } from '../../api';
 
 export const setPosts = (posts: Post[]) => ({ type: SET_POSTS, posts });
 export const setPost = (post: Post) => ({ type: SET_POST, post });
 export const setLoader = (loader: boolean) => ({ type: SET_LOADER, loader });
+export const setCount = (count: number) => ({ type: SET_COUNT, count });
 
-
-export const loadPosts = (
+export const loadPosts = ( page = '1', limit='6', order='', query=''
 ) => async (dispatch: Dispatch) => {
   try {
-    dispatch({ type: FETCH_POSTS });
-    setTimeout(async () => {
-      const response = await postApi.getPosts()
-      const json = await response.data;
-    dispatch(setPosts(json as Post[]));
-    console.log(json)
-    }, 1000);
+  dispatch({ type: FETCH_POSTS });
+    const response = await postApi.getPosts(page, limit, order, query)
+    const results: any = await response.data;
+    const json = results.results;
+    const count = parseInt(results.numOfPages);
+  dispatch(setCount(count));
+  dispatch(setPosts(json as Post[]));
   } catch (e) {
     dispatch({ type: ERROR_POSTS });
   }
@@ -29,11 +28,9 @@ export const loadPosts = (
 export const loadPost = (id:number
   ) => async (dispatch: Dispatch) => {
     try {
-      setTimeout(async () => {
-        const response = await postApi.getPost(id)
-        const json = await response.data;
-        dispatch(setPost(json as Post));
-      }, 3000);
+      const response = await postApi.getPost(id)
+      const json = await response.data;
+      dispatch(setPost(json as Post));
     } catch (e) {
      dispatch({ type: ERROR_POST });
     }
@@ -43,7 +40,7 @@ export const addNewPost = (post: Post)
 : ThunkAction<void, RootState, unknown, AnyAction> => async dispatch => {
   try {
     const resp = await postApi.addPost(post);
-    dispatch(addPost(resp?.data as Post));
+    dispatch(setPost(post));
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log('-------e', e);
@@ -82,12 +79,5 @@ export const setSelectView = (view:string) => (dispatch:Dispatch) => {
     dispatch({
       type: SET_ADD_FAVORITE,
       favorite: favorite,
-    });
-  };
-
-  export const addPost = (post:Post) => (dispatch:Dispatch) => {
-    dispatch({
-      type: ADD_POST,
-      post: post,
     });
   };

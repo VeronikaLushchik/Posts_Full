@@ -14,10 +14,12 @@ import CreatePost from '../../pages/CreatePost';
 import FavoriteList from '../FavoriteList/FavoriteList';
 import '../../scss/postsList.scss';
 import { storage } from '../../utils'
+import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 type Props = {
   posts: Post[],
-  loadPosts: () => void;
+  loadPosts: (page:string, limit:string, order:string, query:string) => void;
   query: string;
   setSearchValue: (query: string) => void;
   select: string;
@@ -29,20 +31,8 @@ type Props = {
   favorite: number[];
   setFavoriteList: (favorite: number[]) => void;
   isFetching: boolean;
+  count: number;
 };
-
-function sortPosts(posts: Post[], select:string) {
-  return posts.sort((a: any, b: any) => {
-    switch (select) {
-      case 'ASC':
-        return a.title.localeCompare(b.title);
-      case 'DESC':
-        return b.title.localeCompare(a.title);
-      default:
-        return posts;
-    }
-  });
-}
 
 export const PostsList: React.FC<Props> = ({
   favorite,
@@ -58,16 +48,13 @@ export const PostsList: React.FC<Props> = ({
   view,
   setSelectView,
   isFetching,
+  count,
 }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [displayedList, setDisplayedList] = useState<Post[]>([]);
+  const [currentPage, setCurrentPage] = useState('1');
   const [maxWidth, setMaxWidth] = useState('370px')
+  const user: any = useSelector<any>(state => state.authReducer.user)
 
-  const indexOfLastPost = currentPage * +page;
-  const indexOfFirstPost = indexOfLastPost - +page;
-  const count = Math.ceil(displayedList.length / +page);
-
-  const handleFavorite = (id: number) => {
+  const handleFavorite = useCallback((id: number) => {
     let newFavList = [...favorite];
 
     if (newFavList.includes(id)) {
@@ -75,17 +62,23 @@ export const PostsList: React.FC<Props> = ({
     } else {
       newFavList.push(id);
     }
-    storage.set('key', newFavList);
+    storage.set('favorite', newFavList);
 
     setFavoriteList(newFavList);
-  };
+  }, [favorite]);
+
+  const handleChange = useCallback((event:any,val:any) => setCurrentPage(val), [])
 
   useEffect(() => {
-    loadPosts();
+    loadPosts(currentPage, page, select, query);
+  }, [currentPage, page, select, query]);
+
+  useEffect(() => {
+    loadPosts(currentPage, page, select, query);
   }, []);
 
   useEffect(() => {
-    let favoriteItems = storage.get('key')
+    let favoriteItems = storage.get('favorite')
     if (favoriteItems?.length) {
       setFavoriteList(favoriteItems);
     };
@@ -98,17 +91,7 @@ export const PostsList: React.FC<Props> = ({
       setMaxWidth('370px');
     }
     
-    setDisplayedList(posts.slice(indexOfFirstPost, indexOfLastPost))
   }, [posts, currentPage, page, view])
-
-  
-  useEffect(() => {
-    if(query.trim()){
-      setDisplayedList(sortPosts(posts.slice(indexOfFirstPost, indexOfLastPost).filter(post => post.title.includes(query)), select))
-    }else {
-      setDisplayedList(sortPosts(posts.slice(indexOfFirstPost, indexOfLastPost), select))
-    }
-  }, [query, select]);
 
   const isFavoriteItem = (id?: number) => favorite.some(i => i === id);
 
@@ -118,11 +101,11 @@ export const PostsList: React.FC<Props> = ({
     <Box className="header">
     <Header setSearchValue={setSearchValue} query={query} select={select} setSelectValue={setSelectValue} setSelectPage={setSelectPage} page={page} setSelectView={setSelectView} view={view} />
     </Box>
-    <CreatePost />
+    {user && <CreatePost />}
     {isFetching ? <CircularProgress /> :
     <>
     <div style={{ height: '100%', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-    {displayedList.map((post:Post) => 
+    {posts.map((post:Post) => 
         <Card key={post._id} sx={{ width: maxWidth, margin: '10px' }} className="cards">
           <CardContent className="cardcontent">
             { isFavoriteItem(post._id) && <FavoriteOutlinedIcon onClick={() => handleFavorite(post._id as number)} className="like"/> }
@@ -143,8 +126,7 @@ export const PostsList: React.FC<Props> = ({
     )}
       </div>
     <Stack spacing={2} m="auto" className="pagination">
-      {!query ? <Pagination size="large" count={Math.ceil(posts.length / +page)} page={currentPage} onChange={(event,val)=> setCurrentPage(val)} />
-      : <Pagination size="large" count={count} page={currentPage} onChange={(event,val)=> setCurrentPage(val)} />}
+       <Pagination size="large" count={count} page={currentPage} onChange={handleChange} />
     </Stack>
     </>
     }

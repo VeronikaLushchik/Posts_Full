@@ -4,7 +4,7 @@ interface Post {
     userId?: number;
     title: string;
     body: string;
-    comments: [Partial<Comment>]
+    comments: [Partial<Comment>] | []
   }
   
   interface Comment {
@@ -17,7 +17,6 @@ interface Post {
   type RootState = {
     posts: Post[],
     post: Partial<Post> | null;
-    comments: Comment[],
     comment: Partial<Comment> | null,
     query: string,
     select: string,
@@ -26,5 +25,23 @@ interface Post {
     favorite: number[],
     isFetching: boolean,
     isFetchingPost: boolean,
+    count: number | null,
+  };
+
+  interface User {
+    firstName?: string;
+    lastName?: string;
+    email: string;
+    password: string;
+    confirmPassword?: string;
+    photo?: string;
+  }
+
+type authState = {
+    authData: any,
+    loading: boolean,
+    errors: string | null,
+    user: User | null,
+    token: string | null,
   };
   

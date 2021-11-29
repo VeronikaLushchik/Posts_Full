@@ -3,23 +3,20 @@ import { AnyAction } from 'redux';
 import {
   SET_POSTS,
   SET_POST,
-  SET_COMMENTS,
   SET_SEARCH_VALUE,
   SET_SELECT_VALUE,
   SET_SELECT_PAGE,
   SET_SELECT_VIEW,
   SET_ADD_FAVORITE,
-  ADD_POST,
   FETCH_POSTS,
   ERROR_POSTS,
   ERROR_POST,
-  ADD_COMMENT
+  SET_COUNT,
 } from '../types';
 
 const initialState: RootState = {
   posts: [],
   post: null,
-  comments: [],
   comment: null,
   query: '',
   select: '',
@@ -28,9 +25,10 @@ const initialState: RootState = {
   favorite: [],
   isFetching: false,
   isFetchingPost: false,
+  count: null,
 };
 
-export const postsReducer = (state = initialState, action: AnyAction) => {
+const postsReducer = (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case SET_POSTS:
       return {
@@ -39,24 +37,17 @@ export const postsReducer = (state = initialState, action: AnyAction) => {
         isFetching: false,
       };
 
+    case SET_COUNT:
+    return {
+      ...state,
+      count: action.count,
+    };
+
     case SET_POST:
       return {
         ...state,
         post: action.post,
       };
-
-    case SET_COMMENTS:
-      return {
-        ...state,
-        comments: action.post.comments,
-      };
-
-      case ADD_COMMENT: {
-        return {
-            ...state,
-            comments: [action.comment, ...state.comments],
-        };
-      }
 
     case SET_SEARCH_VALUE: {
       return {
@@ -93,12 +84,6 @@ export const postsReducer = (state = initialState, action: AnyAction) => {
       };
     }
 
-    case ADD_POST: {
-      return {
-          ...state,
-          posts: [action.post, ...state.posts],
-      };
-    }
     case FETCH_POSTS:{
       return {
           ...state,
@@ -124,3 +109,5 @@ export const postsReducer = (state = initialState, action: AnyAction) => {
       return state;
   }
 };
+
+export default postsReducer;
