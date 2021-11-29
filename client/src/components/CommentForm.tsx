@@ -1,11 +1,12 @@
 /* eslint-disable */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Form, Formik, ErrorMessage } from 'formik';
 import { Button, TextField } from '@mui/material';
 import { validateComment } from '../validate';
 import '../scss/createComment.scss';
 import { storage } from '../utils';
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 type Props = {
   match: any;
@@ -13,23 +14,24 @@ type Props = {
 };
 
 export const CommentForm: React.FC<Props> = ({ addNewComment, match }) => {
-  const user = storage.get('profile');
-
-  const handleSubmit = useCallback((values:any, { setSubmitting, resetForm }:any) => {
+  const user: any = useSelector<any>(state => state.authReducer.user)
+  const initialValues = useMemo(() => ({ name: user.user.name, body: '', email: user?.user.email }), [])
+  
+  const handleSubmit = (values:any, { setSubmitting, resetForm }:any) => {
     const id = match?.params?.postId;
-
+    
     addNewComment(values, id);
     setSubmitting(false);
     resetForm();
-  }, [])
-
+  }
+  
   return (
     <div className="create_comment">
       {user &&
       <>
         <h1 className="create_comment__title">Add a comment</h1>
         <Formik
-          initialValues={{ name: user?.result?.name, body: '', email: user?.result?.email }}
+          initialValues={{ ...initialValues }}
           validationSchema={validateComment}
           onSubmit={handleSubmit}
         >

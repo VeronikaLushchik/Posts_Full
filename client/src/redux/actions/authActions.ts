@@ -27,11 +27,17 @@ export const signup = (formData:any, router:any) => async (dispatch: Dispatch) =
   }
 };
 
-export const setUser = (data:User | null) => (dispatch:Dispatch) => {
+export const setUser = (token:string) => async (dispatch:Dispatch) => {
+  try {
+  const { data } = await authApi.getUser(token);
+
   dispatch({
-    type: AUTH,
+    type: SET_USER,
     data: data,
   });
+} catch (error) {
+  console.log(error);
+}
 };
 
 export const logout = () => {

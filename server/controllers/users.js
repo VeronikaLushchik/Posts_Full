@@ -51,4 +51,19 @@ singup = async (req, res, next) => {
    }
 };
 
-module.exports = { singin, singup, refresh }
+profile = async (req, res, next) => {
+  const token = req.headers.authorization.split(' ')[1];
+  
+  try {
+    const { email } = jwt.verify(token, process.env.SECRET).user._doc
+    const user = await User.findOne({ email });
+    const tokens = generateTokens({...user})
+
+    res.cookie('refreshToken', tokens.refreshToken, {httpOnly: true})
+    res.status(200).json({ ...user._doc });
+  } catch (err) {
+      next(err)
+   }
+};
+
+module.exports = { singin, singup, refresh, profile }

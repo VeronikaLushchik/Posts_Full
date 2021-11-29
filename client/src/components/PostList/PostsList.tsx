@@ -15,6 +15,7 @@ import FavoriteList from '../FavoriteList/FavoriteList';
 import '../../scss/postsList.scss';
 import { storage } from '../../utils'
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 type Props = {
   posts: Post[],
@@ -51,7 +52,7 @@ export const PostsList: React.FC<Props> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState('1');
   const [maxWidth, setMaxWidth] = useState('370px')
-  const user = storage.get('profile');
+  const user: any = useSelector<any>(state => state.authReducer.user)
 
   const handleFavorite = useCallback((id: number) => {
     let newFavList = [...favorite];

@@ -2,10 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { useHistory, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { LOGOUT } from '../redux/types';
-import { storage } from '../utils';
 
 const useStyles = makeStyles({
   page: {
@@ -42,9 +41,8 @@ const useStyles = makeStyles({
 });
 
 const Navbar = () => {
-  const [user, setUser] = useState(storage.get('profile'));
+  let user: any = useSelector<any>(state => state.authReducer.user)
   const dispatch = useDispatch();
-  const location = useLocation();
   const history = useHistory();
   const classes = useStyles();
 
@@ -53,13 +51,7 @@ const Navbar = () => {
 
     history.push('/auth');
 
-    setUser(null);
   };
-
-  useEffect(() => {
-
-    setUser(storage.get('profile'));
-  }, [location]);
 
   return (
     <>
@@ -72,13 +64,13 @@ const Navbar = () => {
           <ListItemText primary="Posts" />
         </ListItem>
 
-        {user?.result ? (
+        {user ? (
           <ListItem
             className={classes.item}
             button
             onClick={logout}
           >
-            <ListItemText primary={user?.result.name} />
+            <ListItemText primary={user?.name} />
           </ListItem>
           
         ) : (

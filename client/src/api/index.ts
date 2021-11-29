@@ -11,9 +11,9 @@ export const instance = axios.create({
 });
 
 instance.interceptors.request.use(req => {
-  if (req.headers && storage.get('profile')) {
-    req.headers.authorization = `Bearer ${storage.get('profile').token}`;
-    const { token } = storage.get('profile');
+  if (req.headers && storage.get('token')) {
+    req.headers.authorization = `Bearer ${storage.get('token')}`;
+    const token = storage.get('token');
     const { exp }:any = decodeToken(token);
     checkToken(exp);
   }
@@ -51,4 +51,5 @@ export const postApi = {
 export const authApi = {
   signIn: (formData: User) => request('post', '/users/singin')(formData),
   signUp: (formData: User) => request('post', '/users/singup')(formData),
+  getUser: (token: string) => request('get', '/users/profile')(token),
 };

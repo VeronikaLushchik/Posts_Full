@@ -17,7 +17,7 @@ export const loadPosts = ( page = '1', limit='6', order='', query=''
     const response = await postApi.getPosts(page, limit, order, query)
     const results: any = await response.data;
     const json = results.results;
-    const count = +results.numOfPages;
+    const count = parseInt(results.numOfPages);
   dispatch(setCount(count));
   dispatch(setPosts(json as Post[]));
   } catch (e) {

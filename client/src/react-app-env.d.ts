@@ -41,5 +41,7 @@ type authState = {
     authData: any,
     loading: boolean,
     errors: string | null,
+    user: User | null,
+    token: string | null,
   };
   
